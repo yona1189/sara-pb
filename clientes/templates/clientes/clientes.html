@@ -1,0 +1,115 @@
+{% extends "../layouts/base.html" %} {# Estamos cargando la plantilla base#} 
+{%load static %} 
+{%block title %} Clientes {% endblock %} 
+
+{% block cabecera_p %} 
+  Clientes  
+  {% endblock %}
+
+  {% block cabecera_imagen %} 
+  <img src="{% static 'img/clientes.svg' %}" class="img-plantilla" alt="" />
+  {% endblock %}
+    
+
+{% block content %}
+
+<!-- Modal -->
+<div
+  class="modal fade {% if editando %}show d-block{% endif %}"
+  id="clienteModal"
+  tabindex="-1"
+  aria-labelledby="clienteModalLabel"
+  {%if not editando%} aria-hidden="true"
+  {% endif %}
+  style="{% if editando %}display:block;{% endif %}"
+>
+
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form
+        method="POST"
+        action="{% if editando %}{% url 'editar_cliente' cliente_id %}{% else %}{% url 'crear_cliente' %}{% endif %}"
+      >
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="clienteModalLabel">
+            {% if editando %}Modificar Cliente{% else %}Nuevo Cliente{% endif %}
+          </h5>
+          <a href="{% url 'clientes' %}" class="btn-close"></a>
+        </div>
+        <div class="modal-body">{{ form.as_p }}</div>
+        <div class="modal-footer">
+          <a href="{% url 'clientes' %}" class="btn btn-secondary">Cancelar</a>
+          <button type="submit" class="btn btn-success">
+            {% if editando %}Actualizar{% else %}Guardar{% endif %}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% if editando %}
+<div class="modal-backdrop fade show"></div>
+<style>
+  body {
+    overflow: hidden;
+  }
+</style>
+{% endif %}
+  
+ {% include 'layouts/submenu_clientes.html' %}
+
+  <button
+    class="btn btn-primary mb-3"
+    data-bs-toggle="modal"
+    data-bs-target="#clienteModal"
+  >
+    <i class="fas fa-plus-circle"></i> Nuevo Cliente
+  </button>
+
+
+    <div class="table-responsive">
+  <table class="table table-bordered table-striped table-hover shadow-sm align-middle text-center">
+    <thead class="table-dark">
+          <tr>
+            <th>Nombres</th>
+            <th>Identificación</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th>Placa</th>
+            <th>Editar</th>
+            <th>Eliminar</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for cliente in clientes %}
+          <tr>
+            <td>{{ cliente.nombres }}</td>
+            <td>{{ cliente.identificacion }}</td>
+            <td>{{ cliente.telefono }}</td>
+            <td>{{ cliente.email }}</td>
+            <td>{{ cliente.placa }}</td>
+            <td>
+              <a
+                href="{% url 'editar_cliente' cliente.id %}"
+                class="text-primary"
+              >
+                <i class="fa-solid fa-pen-to-square"></i>
+              </a>
+            </td>
+            <td>
+             <a href="{% url 'eliminar_cliente' cliente.id %}" class="text-danger">
+            <i class="fa-solid fa-trash"></i>
+          </a>
+            </td>
+          </tr>
+          {% endfor %}
+          <!-- ... -->
+        </tbody>
+      </table>
+    </div>
+  
+
+  {% endblock %}
+</div>

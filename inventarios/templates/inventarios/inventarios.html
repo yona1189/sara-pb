@@ -1,0 +1,112 @@
+{% extends "../layouts/base.html" %} {# Estamos cargando la plantilla base#} 
+{%load static %} 
+{%block title %} Inventarios {% endblock %} 
+
+{% block cabecera_p %} 
+  Inventario  
+  {% endblock %}
+
+  {% block cabecera_imagen %} 
+  <img src="{% static 'img/inventarios.svg' %}" class="img-plantilla" alt="" />
+  {% endblock %}
+    
+
+{% block content %}
+
+<!-- Modal -->
+<div
+  class="modal fade {% if editando %}show d-block{% endif %}"
+  id="articuloModal"
+  tabindex="-1"
+  aria-labelledby="articuloModalLabel"
+  {%if not editando%} aria-hidden="true"
+  {% endif %}
+  style="{% if editando %}display:block;{% endif %}"
+>
+
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form
+        method="POST"
+        action="{% if editando %}{% url 'editar_articulo' articulo_id %}{% else %}{% url 'crear_articulo' %}{% endif %}"
+      >
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="articuloModalLabel">
+            {% if editando %}Modificar artículo{% else %}Nuevo artículo{% endif %}
+          </h5>
+          <a href="{% url 'inventarios' %}" class="btn-close"></a>
+        </div>
+        <div class="modal-body">{{ form.as_p }}</div>
+        <div class="modal-footer">
+          <a href="{% url 'inventarios' %}" class="btn btn-secondary">Cancelar</a>
+          <button type="submit" class="btn btn-success">
+            {% if editando %}Actualizar{% else %}Guardar{% endif %}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% if editando %}
+<div class="modal-backdrop fade show"></div>
+<style>
+  body {
+    overflow: hidden;
+  }
+</style>
+{% endif %}
+  
+ {% include 'layouts/submenu_inventario.html' %}
+
+  <button
+    class="btn btn-primary mb-3"
+    data-bs-toggle="modal"
+    data-bs-target="#articuloModal"
+  >
+    <i class="fas fa-plus-circle"></i> Nuevo artículo  
+  </button>
+
+
+    <div class="table-responsive">
+  <table class="table table-bordered table-striped table-hover shadow-sm align-middle text-center">
+    <thead class="table-dark">
+          <tr>
+            <th>Artículo</th>
+            <th>Cantidad</th>
+            <th>No. Referencia</th>
+            <th>Presentación</th>
+            <th>Stock min</th>
+            <th>Stock max</th>
+            <th>Editar</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for articulo in articulos %}
+          <tr>
+            <td>{{ articulo.nombre_art }}</td>
+            <td>{{ articulo.stock }}</td>
+            <td>{{ articulo.no_referencia }}</td>
+            <td>{{ articulo.presentacion }}</td>
+            <td>{{ articulo.stock_min }}</td>
+            <td>{{ articulo.stock_max }}</td>
+            <td>
+              
+              <a
+                href="{% url 'editar_articulo' articulo.id %}"
+                class="text-primary"
+              >
+                <i class="fa-solid fa-pen-to-square"></i>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+          <!-- ... -->
+        </tbody>
+      </table>
+    </div>
+  
+
+  {% endblock %}
+</div>

@@ -1,0 +1,61 @@
+{% load static %}
+<!-- Checkbox oculto para controlar el menú -->
+<input type="checkbox" id="menu-toggle" hidden>
+
+<!-- Etiqueta que actúa como botón -->
+<label for="menu-toggle" class="btn-menu-mobile">☰</label>
+<div class="sidebar">
+  <nav>
+  <div class="card-img">
+  <img
+            src="{% static 'img/logo.png' %}"
+            class = "logo-sara"
+            alt="Logo sara"
+        />
+    </div>
+  
+    
+        <a href="{% url 'index' %}" class="btn btn-menu mb-2 text-white">
+  <i class="fa-solid fa-house"></i>Principal
+</a>
+      </a>
+      <a href="{% url 'clientes' %}" class="btn btn-menu mb-2"
+        ><i class="fas fa-user icono-menu"></i>Clientes</a
+      >
+      {# Solo los usuarios con rol de administrador pueden acceder al moduli de usuarios #}
+
+      
+     {% if es_admin %}
+      <a href="{% url 'usuarios' %}" class="btn btn-menu mb-2">
+        <i class="fas fa-users icono-menu"></i>Usuarios</a
+      >
+      {% endif %}
+      
+      {% if es_admin %}
+      <a href="{% url 'proveedores' %}" class="btn btn-menu mb-2">
+        <i class="fas fa-truck icono-menu"></i>Proveedores</a
+      >
+      {% endif %}
+
+      <a href="{% url 'inventarios' %}" class="btn btn-menu mb-2">
+        <i class="fas fa-box icono-menu"></i>Inventario</a
+      >
+
+      <a href="#" class="btn btn-menu mb-2">
+        <i class="fas fa-file-invoice-dollar icono-menu"></i>Facturación</a
+      >
+
+      <a href="#" class="btn btn-menu mb-2"
+        ><i class="fas fa-cog icono-menu"></i>ajustes</a
+      >
+
+      <a href="#" class="btn btn-menu mb-2"
+        ><i class="fas fa-paint-brush icono-menu"></i>Personalizar</a
+      >
+
+      <a href="#" class="btn btn-menu mb-2"
+        ><i class="fas fa-headset icono-menu"></i>Soporte</a
+      >
+    
+  </nav>
+</div>

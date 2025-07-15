@@ -1,0 +1,52 @@
+{% extends "../layouts/base.html" %} {# Estamos cargando la plantilla base#} 
+{%load static %} 
+{% block title %} Sara {% endblock %} 
+
+
+{% block cabecera_p %} 
+ Bienvenido a SARA
+  {% endblock %}
+  
+
+  {% block content %}
+
+<div class="card-img">
+  <img src="{% static 'img/parcelas.png' %}" class="img-principal" alt="" />
+</div>
+<h3 class="subtitulo">Resumen de operaciones</h3>
+<div class="resumen1">
+  <div class="resumen-item saltar">
+      <div class="card text-dark bg-info mb-8" >
+      <div class="card-header"><h5 class="card-title">Ventas</h5></div>
+      <div class="card-body">
+        <p class="card-text">Últimos</p>
+      </div>
+    </div>
+  </div>
+  <div class="resumen-item saltar">
+      <div class="card text-dark bg-info mb-8">
+      <div class="card-header"><h5 class="card-title">Stock</h5></div>
+      <div class="card-body">
+        <p class="card-text">Últimos</p>
+      </div>
+    </div>
+  </div>
+  <div class="resumen-item saltar">
+      <div class="card text-dark bg-info mb-8">
+      <div class="card-header"><h5 class="card-title">Entradas</h5></div>
+      <div class="card-body">
+        <p class="card-text">Últimos</p>
+      </div>
+    </div>
+  </div>
+  <div class="resumen-item saltar">
+      <div class="card text-dark bg-info mb-8">
+      <div class="card-header"><h5 class="card-title">Salidas</h5></div>
+      <div class="card-body">
+        <p class="card-text">Últimos</p>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}

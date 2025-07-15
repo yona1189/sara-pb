@@ -1,0 +1,117 @@
+{% extends "../layouts/base.html" %} {# Estamos cargando la plantilla base#} 
+{%load static %} 
+{%block title %} Proveedores {% endblock %} 
+
+{% block cabecera_p %} 
+  Proveedores  
+  {% endblock %}
+
+  {% block cabecera_imagen %} 
+  <img src="{% static 'img/proveedores.svg' %}" class="img-plantilla" alt="" />
+  {% endblock %}
+    
+
+{% block content %}
+
+<!-- Modal -->
+<div
+  class="modal fade {% if editando %}show d-block{% endif %}"
+  id="proveedorModal"
+  tabindex="-1"
+  aria-labelledby="proveedorModalLabel"
+  {%if not editando%} aria-hidden="true"
+  {% endif %}
+  style="{% if editando %}display:block;{% endif %}"
+>
+
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form
+        method="POST"
+        action="{% if editando %}{% url 'editar_proveedor' proveedor_id %}{% else %}{% url 'crear_proveedor' %}{% endif %}"
+      >
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="proveedorModalLabel">
+            {% if editando %}Modificar Proveedor{% else %}Nuevo Proveedor{% endif %}
+          </h5>
+          <a href="{% url 'proveedores' %}" class="btn-close"></a>
+        </div>
+        <div class="modal-body">{{ form.as_p }}</div>
+        <div class="modal-footer">
+          <a href="{% url 'proveedores' %}" class="btn btn-secondary">Cancelar</a>
+          <button type="submit" class="btn btn-success">
+            {% if editando %}Actualizar{% else %}Guardar{% endif %}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% if editando %}
+<div class="modal-backdrop fade show"></div>
+<style>
+  body {
+    overflow: hidden;
+  }
+</style>
+{% endif %}
+  
+ {% include 'layouts/submenu_proveedores.html' %}
+
+  <button
+    class="btn btn-primary mb-3"
+    data-bs-toggle="modal"
+    data-bs-target="#proveedorModal"
+  >
+    Nuevo Proveedor
+  </button>
+
+
+    <div class="table-responsive">
+  <table class="table table-bordered table-striped table-hover shadow-sm align-middle text-center">
+    <thead class="table-dark">
+          <tr>
+            <th>Nombre empresa</th>
+            <th>Nit</th>
+            <th>Propietario</th>
+            <th>Teléfono</th>
+            <th>Dirección</th>
+            <th>Email</th>
+            <th>Editar</th>
+            <th>Eliminar</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for proveedor in proveedores %}
+          <tr>
+            <td>{{ proveedor.nombre_empresa }}</td>
+            <td>{{ proveedor.nit }}</td>
+            <td>{{ proveedor.nombre_propietario }}</td>
+            <td>{{ proveedor.telefono }}</td>
+            <td>{{ proveedor.direccion }}</td>
+            <td>{{ proveedor.email }}</td>
+            <td>
+              <a
+                href="{% url 'editar_proveedor' proveedor.id %}"
+                class="text-primary"
+              >
+                <i class="fa-solid fa-pen-to-square"></i>
+              </a>
+            </td>
+            <td>
+             <a href="{% url 'eliminar_proveedor' proveedor.id %}" class="text-danger">
+            <i class="fa-solid fa-trash"></i>
+          </a>
+            </td>
+          </tr>
+          {% endfor %}
+          <!-- ... -->
+        </tbody>
+      </table>
+    </div>
+  
+
+  {% endblock %}
+</div>

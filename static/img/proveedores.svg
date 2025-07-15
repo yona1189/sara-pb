@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 136.51451 135" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(-480.31 -442)" stroke-miterlimit="10">
+  <path d="m566.19 493.26c35 0 45 10 48.325 30.112s1.6748 39.888-48.325 39.888-50-20-45-40 10-30 45-30" fill="#2e993a" fill-rule="evenodd" stroke="#1e8523" stroke-width="2.5"/>
+  <path d="m556.19 493.26h25l-15 55z" fill="#fff" fill-rule="evenodd" stroke="#1e8523" stroke-width="2.5"/>
+  <path d="m551.19 488.26 10 10-5 5z" fill="#2e993a" fill-rule="evenodd" stroke="#1e8523" stroke-width="2.5"/>
+  <path d="m576.19 498.26 10-10-5 15z" fill="#2e993a" fill-rule="evenodd" stroke="#1e8523" stroke-width="2.5"/>
+  <path d="m541.19 523.26c-5.3369 9.0674-7.9443 19.487-7.5 30" fill="none" stroke="#1e8523" stroke-width="1.25"/>
+  <path d="m598.69 553.26c0.94238-10.264-0.78125-20.596-5-30" fill="none" stroke="#1e8523" stroke-width="1.25"/>
+  <path d="m596.19 470.76c0 15.19-12.31 27.5-27.5 27.5s-27.5-12.31-27.5-27.5 12.314-27.5 27.5-27.5 27.5 12.314 27.5 27.5" fill="#ffd9b5" fill-rule="evenodd" stroke="#ffb068" stroke-width="2.5"/>
+  <path d="m528.69 505.76c35 0 45 10 48.325 30.112s1.6748 39.888-48.325 39.888-50-20-45-40 10-30 45-30" fill="#2e5e99" fill-rule="evenodd" stroke="#1e4a85" stroke-width="2.5"/>
+  <path d="m518.69 505.76h25l-15 55z" fill="#fff" fill-rule="evenodd" stroke="#1e4a85" stroke-width="2.5"/>
+  <path d="m513.69 500.76 10 10-5 5z" fill="#6161ff" fill-rule="evenodd" stroke="#1e4a85" stroke-width="2.5"/>
+  <path d="m538.69 510.76 10-10-5 15z" fill="#6161ff" fill-rule="evenodd" stroke="#1e4a85" stroke-width="2.5"/>
+  <path d="m503.69 535.76c-5.3369 9.0674-7.9443 19.487-7.5 30" fill="none" stroke="#1e4a85" stroke-width="1.25"/>
+  <path d="m561.19 565.76c0.94237-10.264-0.78125-20.596-5-30" fill="none" stroke="#1e4a85" stroke-width="1.25"/>
+  <path d="m558.69 483.26c0 15.19-12.31 27.5-27.5 27.5s-27.5-12.31-27.5-27.5 12.314-27.5 27.5-27.5 27.5 12.314 27.5 27.5" fill="#ffd9b5" fill-rule="evenodd" stroke="#ffb068" stroke-width="2.5"/>
+ </g>
+</svg>

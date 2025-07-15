@@ -1,0 +1,92 @@
+# 🛠️ Proyecto SARA - Entorno de desarrollo con Docker
+
+Este proyecto es una aplicación Django llamada **SARA** con base de datos MySQL, lista para ser ejecutada en cualquier equipo con Docker y Docker Compose.
+
+---
+
+## 🚀 Requisitos
+
+- Docker Desktop instalado
+- Docker Compose instalado
+- Git (si vas a clonar el repositorio)
+
+---
+
+## 📁 Estructura del proyecto
+
+sara_v_0/
+├── docker-compose.yml
+├── Dockerfile
+├── .env
+├── requirements.txt
+├── README.md
+├── manage.py
+├── inventarios/ ← App de Django
+└── sara_v_0/ ← Configuración del proyecto
+
+yaml
+
+---
+
+## ⚙️ Configuración de entorno
+
+El archivo `.env` contiene las variables para la base de datos MySQL:
+
+```env
+MYSQL_DATABASE=saradb
+MYSQL_USER=sarauser
+MYSQL_PASSWORD=sarapass
+MYSQL_ROOT_PASSWORD=rootpass
+🧱 Levantar el entorno por primera vez
+Desde la raíz del proyecto (sara_v_0/), ejecuta:
+
+
+docker-compose build
+docker-compose up
+Esto:
+
+Construye la imagen de Django
+
+Crea el contenedor de la app y la base de datos MySQL
+
+Corre la aplicación en http://localhost:8000
+
+🧩 Aplicar migraciones
+En otra terminal, ejecuta:
+
+docker-compose exec web python manage.py migrate
+👤 Crear superusuario de Django
+
+docker-compose exec web python manage.py createsuperuser
+Y accede al admin en:
+
+
+http://localhost:8000/admin
+🧬 Restaurar base de datos (opcional)
+A. Desde volumen .tar.gz (opción recomendada)
+Crea el volumen (si aún no existe):
+
+
+docker volume create sara_v_0_mysql_data
+Restaura los datos (debes tener mysql_data.tar.gz en la raíz):
+
+
+docker run --rm -v sara_v_0_mysql_data:/volume -v $(pwd):/backup alpine sh -c "cd /volume && tar xzf /backup/mysql_data.tar.gz"
+B. Desde .sql:
+
+docker cp sara_dump.sql sara_v_0-db-1:/sara_dump.sql
+docker exec -i sara_v_0-db-1 mysql -u sarauser -psarapass saradb < /sara_dump.sql
+🛑 Apagar contenedores
+
+docker-compose down
+📝 Notas
+Si el puerto 8000 o 3306 están ocupados, puedes cambiarlos en docker-compose.yml.
+
+El archivo .env no debe compartirse públicamente si contiene contraseñas reales.
+
+🤝 Autor
+Yonatan Martínez Grijalba y Maria Roxana Rodriguez Rocha
+Proyecto desarrollado con ❤️ usando Django + Docker + MySQL.
+
+yaml
+---

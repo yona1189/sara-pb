@@ -1,0 +1,17 @@
+{% extends "../layouts/base.html" %}
+{% block title %}Confirmar eliminación{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="alert alert-danger text-center shadow">
+    <h4>¿Estás seguro de que deseas eliminar este artículo: <strong>{{ articulo.nombre_art }}</strong>?</h4>
+    <h5>Referencia No. <strong>{{ articulo.no_referencia }}</strong> </h5>
+    <p>Esta acción no se puede deshacer.</p>
+    <form method="POST">
+      {% csrf_token %}
+      <a href="{% url 'inventarios' %}" class="btn btn-secondary">Cancelar</a>
+      <button type="submit" class="btn btn-danger">Eliminar</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

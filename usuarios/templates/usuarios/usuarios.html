@@ -1,0 +1,199 @@
+{% extends "../layouts/base.html" %}
+{%load static %} 
+{% load widget_tweaks %}
+{% block title %}Usuarios{% endblock %}
+{% block cabecera_p %} 
+  Usuarios  
+  {% endblock %}
+{% block cabecera_imagen %} 
+  <img src="{% static 'img/usuarios.svg' %}" class="img-plantilla" alt="" />
+  {% endblock %}
+
+{% block content %}
+
+{# Mostrar mensajes de Django #}
+{% if messages %}
+<div class="container mt-2">
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{# Modal de crear/editar usuario #}
+<div class="modal fade" id="usuarioModal" tabindex="-1" aria-labelledby="usuarioModalLabel">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form method="POST" action="{% if editando %}{% url 'editar_usuario' usuario_id %}{% else %}{% url 'crear_usuario' %}{% endif %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="usuarioModalLabel">
+            {% if editando %}Modificar Usuario{% else %}Nuevo Usuario{% endif %}
+          </h5>
+          <a href="{% url 'usuarios' %}" class="btn-close"></a>
+        </div>
+
+        <div class="modal-body">
+          <div class="container">
+            <div class="row g-3">
+
+              {# Campos generales del formulario #}
+              {% for field in form %}
+  {% if field.name != "password1" and field.name != "password2" and field.name != "is_active" and field.name != "is_staff" and field.name != "is_superuser" %}
+    <div class="col-md-6">
+      <label for="{{ field.id_for_label }}" class="form-label fw-bold">{{ field.label }}</label>
+      {{ field|add_class:"form-control" }}
+      {% if field.help_text %}
+        <div class="form-text text-muted">{{ field.help_text }}</div>
+      {% endif %}
+      {% for error in field.errors %}
+        <div class="error-text-1">{{ error }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endfor %}
+
+              {# Contraseña #}
+              <div class="col-12 position-relative">
+                <label for="{{ form.password1.id_for_label }}" class="form-label fw-bold">Contraseña</label>
+                <div class="input-group campo-password">
+                  {{ form.password1|add_class:"form-control" }}
+                  <span class="input-group-text" onclick="togglePassword('id_password1')">
+                    <i id="icon_id_password1" class="fa-solid fa-eye"></i>
+                  </span>
+                </div>
+                {% for error in form.password1.errors %}
+                  <div class="error-text-1">{{ error }}</div>
+                {% endfor %}
+              </div>
+
+              {# Confirmar contraseña #}
+              <div class="col-12 position-relative">
+                <label for="{{ form.password2.id_for_label }}" class="form-label fw-bold">Confirmar Contraseña</label>
+                <div class="input-group campo-password">
+                  {{ form.password2|add_class:"form-control" }}
+                  <span class="input-group-text" onclick="togglePassword('id_password2')">
+                    <i id="icon_id_password2" class="fa-solid fa-eye"></i>
+                  </span>
+                </div>
+                {% for error in form.password2.errors %}
+                  <div class="error-text-1">{{ error }}</div>
+                {% endfor %}
+              </div>
+
+              {# Errores generales del formulario #}
+              {% if form.non_field_errors %}
+                <div class="col-12 mt-2">
+                  <div class="alert alert-danger">
+                    <ul class="mb-0">
+                      {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+              {% endif %}
+
+              {# Checkboxes de permisos #}
+              <div class="col-12 d-flex justify-content-center gap-4 align-items-center flex-wrap">
+                <div class="form-check m-0">
+                  {{ form.is_active }}
+                  <label class="form-check-label" for="{{ form.is_active.id_for_label }}">{{ form.is_active.label }}</label>
+                </div>
+                <div class="form-check m-0">
+                  {{ form.is_staff }}
+                  <label class="form-check-label" for="{{ form.is_staff.id_for_label }}">{{ form.is_staff.label }}</label>
+                </div>
+                <div class="form-check m-0">
+                  {{ form.is_superuser }}
+                  <label class="form-check-label" for="{{ form.is_superuser.id_for_label }}">{{ form.is_superuser.label }}</label>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <a href="{% url 'usuarios' %}" class="btn btn-secondary">Cancelar</a>
+          <button type="submit" class="btn btn-success">
+            {% if editando %}Actualizar{% else %}Guardar{% endif %}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+{% include 'layouts/submenu_usuarios.html' %}
+
+<button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#usuarioModal">
+  <i class="fas fa-plus-circle"></i> Crear Usuario
+</button>
+
+<div class="table-responsive">
+  <table class="table table-bordered table-striped table-hover shadow-sm align-middle text-center">
+    <thead class="table-dark">
+      <tr>
+        <th>Usuario</th>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Teléfono</th>
+        <th>Documento</th>
+        <th>Rol</th>
+        <th>Editar</th>
+        <th>Eliminar</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in usuarios %}
+      <tr>
+        <td>{{ u.username }}</td>
+        <td>{{ u.first_name }} {{ u.last_name }}</td>
+        <td>{{ u.email }}</td>
+        <td>{{ u.telefono }}</td>
+        <td>{{ u.tipo_documento }} {{ u.documento }}</td>
+        <td>{{ u.rol }}</td>
+        <td>
+          <a href="{% url 'editar_usuario' u.id %}" class="text-primary">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </a>
+        </td>
+        <td>
+          <a href="{% url 'eliminar_usuario' u.id %}" class="text-danger">
+            <i class="fa-solid fa-trash"></i>
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
+{# Mostrar backdrop y evitar scroll si hay errores o se edita #}
+{% if form.errors or mostrar_modal or editando %}
+<script>
+  const modal = new bootstrap.Modal(document.getElementById('usuarioModal'));
+  modal.show();
+</script>
+<style>body { overflow: hidden; }</style>
+{% endif %}
+
+{% block scripts %}
+  {% if mostrar_modal %}
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const modal = new bootstrap.Modal(document.getElementById("usuarioModal"));
+        modal.show();
+      });
+    </script>
+    <style>
+      body { overflow: hidden; }
+    </style>
+  {% endif %}
+{% endblock %}

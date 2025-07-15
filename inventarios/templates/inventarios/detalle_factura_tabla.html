@@ -1,0 +1,24 @@
+{% if detalles %}
+<div class="table-responsive">
+   <table class="table table-bordered table-striped table-hover shadow-sm align-middle text-center">
+    <thead class="table-dark">
+    <tr>
+      <th>Factura No</th>
+      <th>Artículo</th>
+      <th>Cantidad</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for detalle in detalles %}
+      <tr>
+        <td>{{ detalle.factura.factura_no }}</td>
+        <td>{{ detalle.articulo.nombre_art }}</td>
+        <td>{{ detalle.cantidad }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% else %}
+<p >No hay artículos registrados para esta factura.</p>
+{% endif %}

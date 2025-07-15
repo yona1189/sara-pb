@@ -1,0 +1,55 @@
+{% extends "../layouts/base.html" %}
+{% block title %}Perfiles y Accesos{% endblock %}
+
+{% block content %}
+<h1>Perfiles y Accesos</h1>
+
+{% include 'layouts/submenu_usuarios.html' %}
+
+<div class="table-responsive">
+  <table class="table table-bordered table-hover text-center">
+    <thead class="table-dark">
+      <tr>
+        <th>Usuario</th>
+        <th>Rol</th>
+        <th>Estado</th>
+        <th>Permisos</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in usuarios %}
+      <tr>
+        <td>{{ u.username }}</td>
+        <td>
+          {% if u.is_superuser %}
+            <span class="badge bg-danger">Administrador</span>
+          {% elif u.is_staff %}
+            <span class="badge bg-primary">Staff</span>
+          {% else %}
+            <span class="badge bg-secondary">Invitado</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if u.is_active %}
+            <span class="text-success fw-bold">Activo</span>
+          {% else %}
+            <span class="text-danger fw-bold">Inactivo</span>
+          {% endif %}
+        </td>
+        <td>
+          {% for perm in u.user_permissions.all %}
+            <span class="badge bg-info">{{ perm.name }}</span>
+          {% empty %}
+            <span class="text-muted">Sin permisos</span>
+          {% endfor %}
+        </td>
+        <td>
+          <a href="#" class="btn btn-sm btn-warning">Editar</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
