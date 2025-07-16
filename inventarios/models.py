@@ -24,7 +24,7 @@ class Articulo(models.Model):
 
 class EntradaFactura(models.Model):
     factura_no = models.CharField(max_length=20)
-    fecha_entrada = models.DateField(auto_now_add=True)
+    fecha_entrada = models.DateTimeField(auto_now_add=True)
     usuario_responsable = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT
@@ -40,3 +40,21 @@ class DetalleEntrada(models.Model):
 
     def __str__(self):
         return f"{self.articulo.nombre} x {self.cantidad}"
+    
+
+class SalidaFactura(models.Model):
+    factura_no = models.CharField(max_length=20, unique=True)
+    usuario_responsable = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    fecha_salida = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Salida {self.factura_no}"
+
+
+class DetalleSalida(models.Model):
+    factura = models.ForeignKey(SalidaFactura, on_delete=models.CASCADE)
+    articulo = models.ForeignKey(Articulo, on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"{self.cantidad} x {self.articulo.nombre_art}"

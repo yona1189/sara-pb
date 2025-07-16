@@ -1,0 +1,111 @@
+{% extends "../layouts/base.html" %} {# Estamos cargando la plantilla base#}
+{%load static %} 
+{%block title %} 
+  Inventarios 
+{% endblock %} 
+{% block cabecera_p%}
+  Inventario 
+{% endblock %} 
+{% block cabecera_imagen %}
+<img src="{% static 'img/inventarios.svg' %}" class="img-plantilla" alt="" />
+{% endblock %} 
+{% block content %} 
+{% include 'layouts/submenu_inventario.html'%}
+
+<h2>Registrar salida de artículos</h2>
+
+{% if messages %}
+  <div class="mt-3">
+    {% for message in messages %}
+    <div class="alert alert-success alert-dismissible fade show small-form-alert" role="alert">
+      <strong>Éxito:</strong> {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<div class="container mt-4 p-4 bg-white rounded shadow-sm" style="max-width: 750px">
+  <form 
+    id="salida-formulario"
+    method="POST"
+    hx-post="{% url 'registrar_salida' %}"
+    hx-swap="none"
+    hx-on="htmx:afterRequest: actualizarTablaSalidas()">
+    
+    {% csrf_token %}
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label for="id_factura_no">Factura No</label>
+        <input
+          type="text"
+          name="factura_no"
+          id="id_factura_no"
+          class="form-control"
+          placeholder="Ingrese número de factura"
+          hx-get="{% url 'detalle_salida_htmx' %}"
+          hx-trigger="keyup changed delay:300ms"
+          hx-target="#tabla-salidas"
+          autocomplete="off"
+          value="{{ form.factura_no.value|default_if_none:'' }}"
+        />
+      </div>
+
+      <div class="col-md-4">
+        <label for="id_articulo">Artículo</label>
+        {{ form.articulo }}
+      </div>
+
+      <div class="col-md-4">
+        {{ form.cantidad.label_tag }}
+        {{ form.cantidad }}
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <button type="submit" class="btn btn-danger w-100">Registrar salida</button>
+    </div>
+  </form>
+</div>
+
+<div id="tabla-salidas" class="mt-4">
+  <!-- Aquí se mostrarán en tiempo real los artículos retirados de esta factura -->
+</div>
+
+
+
+
+<script>
+  const urlDetalleSalida = "{% url 'detalle_salida_htmx' %}";
+
+  function actualizarTablaSalidas() {
+    console.log('Actualizando tabla de salidas...');
+    const facturaNo = document.querySelector('#id_factura_no')?.value;
+
+    if (facturaNo) {
+      htmx.ajax('GET', `${urlDetalleSalida}?factura_no=${encodeURIComponent(facturaNo)}`, {
+        target: '#tabla-salidas',
+        swap: 'innerHTML'
+      });
+
+      const cantidadInput = document.querySelector('input[name="cantidad"]');
+      const articuloSelect = document.querySelector('#id_articulo');
+
+      if (cantidadInput) {
+        cantidadInput.value = '';
+      }
+
+      if (articuloSelect) {
+        articuloSelect.value = '';
+        if ($(articuloSelect).hasClass('select2-hidden-accessible')) {
+          $(articuloSelect).val(null).trigger('change');
+        }
+      }
+
+      if (cantidadInput) {
+        cantidadInput.focus();
+      }
+    }
+  }
+</script>
+{% endblock %}

@@ -1,6 +1,6 @@
 from django import forms
 from django_select2.forms import ModelSelect2Widget
-from .models import Articulo, DetalleEntrada, EntradaFactura
+from .models import Articulo, DetalleEntrada, EntradaFactura, DetalleSalida
 
 class ArticuloForm(forms.ModelForm):
     class Meta:
@@ -70,3 +70,34 @@ class DetalleEntradaForm(forms.ModelForm):
         # Evita errores al no incluir 'factura' (es ForeignKey)
         #if 'factura' in self.fields:
         #    del self.fields['factura']
+
+
+class DetalleSalidaForm(forms.ModelForm):
+    class Meta:
+        model = DetalleSalida
+        fields = ['factura_no', 'articulo', 'cantidad']
+
+    factura_no = forms.CharField(
+        label="Factura No",
+        max_length=20,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Ingrese número de factura'
+        })
+    )
+
+    articulo = forms.ModelChoiceField(
+        queryset=Articulo.objects.all(),
+        widget=ModelSelect2Widget(
+            model=Articulo,
+            search_fields=['nombre_art__icontains'],
+            attrs={'class': 'form-control', 'data-placeholder': 'Buscar artículo'}
+        )
+    )
+
+
+    cantidad = forms.IntegerField(
+        label="Cantidad",
+        min_value=1,
+        widget=forms.NumberInput(attrs={'class': 'form-control'})
+    )

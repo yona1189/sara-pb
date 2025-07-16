@@ -1,0 +1,75 @@
+{% extends "../layouts/base.html" %} {# Estamos cargando la plantilla base#}
+{%load static %} 
+{%block title %} 
+  Inventarios 
+{% endblock %} 
+{% block cabecera_p%}
+  Inventario 
+{% endblock %} 
+{% block cabecera_imagen %}
+<img src="{% static 'img/inventarios.svg' %}" class="img-plantilla" alt="" />
+{% endblock %} 
+{% block content %} 
+{% include 'layouts/submenu_inventario.html'%}
+
+<div class="container mt-4">
+  <h3>Listado de Facturas</h3>
+
+  <form method="get" class="row g-3 mb-3">
+    <div class="col-md-4">
+      <label for="tipo" class="form-label">Tipo de Factura</label>
+      <select class="form-select" name="tipo" id="tipo" onchange="this.form.submit()">
+        <option value="entrada" {% if tipo == 'entrada' %}selected{% endif %}>Entrada</option>
+        <option value="salida" {% if tipo == 'salida' %}selected{% endif %}>Salida</option>
+      </select>
+    </div>
+  </form>
+
+  {% if facturas %}
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped shadow-sm mt-3 text-center align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>Número de Factura</th>
+            <th>Responsable</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for factura in facturas %}
+          <tr>
+            <td>{{ factura.factura_no }}</td>
+            <td>{{ factura.usuario_responsable.first_name }} {{ factura.usuario_responsable.last_name }}</td>
+            <td>
+            {% if tipo == 'entrada' %}
+               <span class="fecha-servidor" data-fecha="{{ factura.fecha_entrada|date:'c' }}"></span>
+             {% else %}
+            <span class="fecha-servidor" data-fecha="{{ factura.fecha_salida|date:'c' }}"></span>
+            {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p>No se encontraron facturas de {{ tipo }}.</p>
+  {% endif %}
+</div>
+
+<!--Con este scrip logramos que la hora se muestre segun el dispositico del usuario-->
+<script>
+  document.querySelectorAll('.fecha-servidor').forEach(el => {
+    const fechaUTC = new Date(el.dataset.fecha);
+    const fechaLocal = fechaUTC.toLocaleString(undefined, {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+    el.textContent = fechaLocal;
+  });
+</script>
+{% endblock %}

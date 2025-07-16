@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import ArticuloForm, DetalleEntradaForm 
-from .models import Articulo, EntradaFactura, DetalleEntrada
+from .forms import ArticuloForm, DetalleEntradaForm, DetalleSalidaForm
+from .models import Articulo, EntradaFactura, DetalleEntrada, DetalleSalida, SalidaFactura
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 
@@ -90,7 +90,8 @@ def registrar_entrada(request):
             messages.success(request, f"Agregado: {cantidad} unidades de '{articulo.nombre_art}' a la factura {factura_no}.")
             
             # Re-crear el formulario con el número de factura ya puesto
-            form = DetalleEntradaForm(initial={'factura_no': factura_no})
+            #form = DetalleEntradaForm(initial={'factura_no': #factura_no})
+            return HttpResponse(status=204)
 
     else:
         # Primera vez que se carga la vista
@@ -109,4 +110,64 @@ def detalle_factura_htmx(request):
 
     return render(request, 'inventarios/detalle_factura_tabla.html', {
         'detalles': detalles
+    })
+
+#salidas
+@login_required
+def registrar_salida(request):
+    if request.method == 'POST':
+        form = DetalleSalidaForm(request.POST)
+        if form.is_valid():
+            factura_no = form.cleaned_data['factura_no']
+            articulo = form.cleaned_data['articulo']
+            cantidad = form.cleaned_data['cantidad']
+
+            factura, _ = SalidaFactura.objects.get_or_create(
+                factura_no=factura_no,
+                defaults={'usuario_responsable': request.user}
+            )
+
+            DetalleSalida.objects.create(
+                factura=factura,
+                articulo=articulo,
+                cantidad=cantidad
+            )
+
+            # Restar del stock del artículo
+            articulo.stock = max(0, articulo.stock - cantidad)
+            articulo.save()
+
+            messages.success(request, f"Salida registrada: {cantidad} unidades de '{articulo.nombre_art}' en factura {factura_no}.")
+            return HttpResponse(status=204)  # HTMX: no necesita respuesta
+    else:
+        form = DetalleSalidaForm()
+
+    return render(request, 'inventarios/registrar_salida.html', {'form': form})
+
+
+@login_required
+def detalle_salida_htmx(request):
+    factura_no = request.GET.get('factura_no')
+    detalles = []
+
+    if factura_no:
+        detalles = DetalleSalida.objects.filter(factura__factura_no=factura_no).select_related('factura', 'articulo')
+
+    return render(request, 'inventarios/detalle_salida_tabla.html', {
+        'detalles': detalles
+    })
+
+# Mostrat facturas
+@login_required
+def listar_facturas(request):
+    tipo = request.GET.get('tipo', 'entrada')
+
+    if tipo == 'salida':
+        facturas = SalidaFactura.objects.select_related('usuario_responsable').order_by('-fecha_salida')
+    else:
+        facturas = EntradaFactura.objects.select_related('usuario_responsable').order_by('-fecha_entrada')
+
+    return render(request, 'inventarios/listar_facturas.html', {
+        'facturas': facturas,
+        'tipo': tipo
     })

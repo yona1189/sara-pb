@@ -1,75 +1,121 @@
-{% extends "../layouts/base.html" %} {# Estamos cargando la plantilla base#} 
+{% extends "../layouts/base.html" %} {# Estamos cargando la plantilla base#}
 {%load static %} 
-{%block title %} Inventarios {% endblock %} 
- 
+{%block title %} 
+  Inventarios 
+{% endblock %} 
+{% block cabecera_p%}
+  Inventario 
+{% endblock %} 
+{% block cabecera_imagen %}
+<img src="{% static 'img/inventarios.svg' %}" class="img-plantilla" alt="" />
+{% endblock %} 
+{% block content %} 
+{% include 'layouts/submenu_inventario.html'%}
 
-
-{% block cabecera_p %} 
-  Inventario  
-  {% endblock %}
-
-  {% block cabecera_imagen %} 
-  <img src="{% static 'img/inventarios.svg' %}" class="img-plantilla" alt="" />
-  {% endblock %}
-    
-
-{% block content %}
-
-
- {% include 'layouts/submenu_inventario.html' %}
-
-  
- 
-  <h2>Cargar artículos</h2>
-  {% if messages %}
-  <div class="mt-3">
-    {% for message in messages %}
-      <div class="alert alert-success alert-dismissible fade show small-form-alert" role="alert">
-        <strong> Éxito:</strong> {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-      </div>
-    {% endfor %}
-  </div>
- {% endif %}
- <div class="nuevaentrada container mt-4 p-4 bg-white rounded shadow-sm" style="max-width: 750px;">
-  <form method="post">
-    {% csrf_token %}
-    <div class="row g-3">
-      
-      <div class="col-md-4">
-  <label for="id_factura_no">Factura No</label>
-  <input
-    type="text"
-    name="factura_no"
-    id="id_factura_no"
-    class="form-control"
-    placeholder="Ingrese número de factura"
-    hx-get="{% url 'detalle_factura_htmx' %}"
-    hx-trigger="keyup changed delay:300ms"
-    hx-target="#tabla-detalles"
-    autocomplete="off"
-    value="{{ form.factura_no.value|default_if_none:'' }}"
+<h2>Cargar artículos</h2>
+{% if messages %}
+<div class="mt-3">
+  {% for message in messages %}
+  <div
+    class="alert alert-success alert-dismissible fade show small-form-alert"
+    role="alert"
   >
+    <strong> Éxito:</strong> {{ message }}
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Cerrar"
+    ></button>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+<div
+  class="nuevaentrada container mt-4 p-4 bg-white rounded shadow-sm"
+  style="max-width: 750px"
+>
+<form 
+  id="entrada-formulario"
+  method="POST"
+  hx-post="{% url 'registrar_entrada' %}"
+  hx-swap="none"
+  hx-on="htmx:afterRequest: actualizarTablaDetalles()">
+  {% csrf_token %}
+  <div class="row g-3">
+    <div class="col-md-4">
+      <label for="id_factura_no">Factura No</label>
+      <input
+        type="text"
+        name="factura_no"
+        id="id_factura_no"
+        class="form-control"
+        placeholder="Ingrese número de factura"
+        hx-get="{% url 'detalle_factura_htmx' %}"
+        hx-trigger="keyup changed delay:300ms"
+        hx-target="#tabla-detalles"
+        autocomplete="off"
+        value="{{ form.factura_no.value|default_if_none:'' }}"
+      />
+    </div>
+
+    <div class="col-md-4">
+      <label for="id_articulo">Artículo</label>
+      {{ form.articulo }}
+    </div>
+    <div class="col-md-4">
+      {{ form.cantidad.label_tag }}
+      {{ form.cantidad }}
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <button type="submit" class="btn btn-primary w-100">Agregar</button>
+  </div>
+</form>
 </div>
 
-      <div class="col-md-4">
-        <label for="id_factura_no">Artículo</label>
-        {{ form.articulo }}
-      </div>
-      <div class="col-md-4">
-        {{ form.cantidad.label_tag }}
-        {{ form.cantidad }}
-      </div>
-    </div>
-    <div class="mt-4">
-      <button type="submit" class="btn btn-primary w-100">Guardar</button>
-    </div>
-  </form>
- </div>
-
- <div id="tabla-detalles" class="mt-4">
+<div id="tabla-detalles" class="mt-4">
   <!-- Aquí se mostrarán en tiempo real los artículos de la factura -->
 </div>
 
+<script>
+  const urlDetalleFactura = "{% url 'detalle_factura_htmx' %}";
+
+  function actualizarTablaDetalles() {
+
+    const facturaInput = document.querySelector('#id_factura_no');
+    const facturaNo = facturaInput?.value;
+
+    if (facturaNo) {
+      // Recargar la tabla
+      htmx.ajax('GET', `${urlDetalleFactura}?factura_no=${encodeURIComponent(facturaNo)}`, {
+        target: '#tabla-detalles',
+        swap: 'innerHTML'
+      });
+
+      // Limpiar campo de cantidad
+      const cantidadInput = document.querySelector('input[name="cantidad"]');
+      if (cantidadInput) {
+        cantidadInput.value = '';
+      }
+
+      // Limpiar campo de artículo (Select2 o select normal)
+      const articuloSelect = document.querySelector('#id_articulo');
+      if (articuloSelect) {
+        articuloSelect.value = '';
+        // Si estás usando Select2, también reinicializa visualmente
+        if ($(articuloSelect).hasClass('select2-hidden-accessible')) {
+          $(articuloSelect).val(null).trigger('change');
+        }
+      }
+
+      // Enfocar nuevamente el campo cantidad
+      if (cantidadInput) {
+        cantidadInput.focus();
+      }
+    }
+  }
+</script>
 {% endblock %}
 
