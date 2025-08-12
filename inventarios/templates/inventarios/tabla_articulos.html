@@ -1,0 +1,36 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-striped table-hover shadow-sm align-middle text-center">
+    <thead class="table-dark">
+      <tr>
+        <th>Artículo</th>
+        <th>Cantidad</th>
+        <th>No. Referencia</th>
+        <th>Presentación</th>
+        <th>Stock min</th>
+        <th>Stock max</th>
+        <th>Editar</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for articulo in articulos %}
+      <tr>
+        <td>{{ articulo.nombre_art }}</td>
+        <td>{{ articulo.stock }}</td>
+        <td>{{ articulo.no_referencia }}</td>
+        <td>{{ articulo.presentacion }}</td>
+        <td>{{ articulo.stock_min }}</td>
+        <td>{{ articulo.stock_max }}</td>
+        <td>
+          <a href="{% url 'editar_articulo' articulo.id %}" class="text-primary">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="7">No se encontraron artículos</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

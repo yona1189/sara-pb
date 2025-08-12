@@ -14,24 +14,20 @@
 
 <h2>Registrar salida de artículos</h2>
 
-{% if messages %}
-  <div class="mt-3">
-    {% for message in messages %}
-    <div class="alert alert-success alert-dismissible fade show small-form-alert" role="alert">
-      <strong>Éxito:</strong> {{ message }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-    </div>
-    {% endfor %}
-  </div>
-{% endif %}
+<div id="zona-modal">
+  <!-- Aquí se inyectará el modal vía HTMX/AJAX -->
+</div>
 
 <div class="container mt-4 p-4 bg-white rounded shadow-sm" style="max-width: 750px">
   <form 
-    id="salida-formulario"
-    method="POST"
-    hx-post="{% url 'registrar_salida' %}"
-    hx-swap="none"
-    hx-on="htmx:afterRequest: actualizarTablaSalidas()">
+  id="salida-formulario"
+  method="POST"
+  hx-post="{% url 'registrar_salida' %}"
+  hx-target="#zona-modal"
+  hx-swap="none"
+  hx-target="#zona-modal"
+  hx-trigger="submit"
+  hx-on="htmx:afterRequest: actualizarTablaSalidas()">
     
     {% csrf_token %}
     <div class="row g-3">
@@ -66,6 +62,7 @@
       <button type="submit" class="btn btn-danger w-100">Registrar salida</button>
     </div>
   </form>
+
 </div>
 
 <div id="tabla-salidas" class="mt-4">
@@ -79,7 +76,6 @@
   const urlDetalleSalida = "{% url 'detalle_salida_htmx' %}";
 
   function actualizarTablaSalidas() {
-    console.log('Actualizando tabla de salidas...');
     const facturaNo = document.querySelector('#id_factura_no')?.value;
 
     if (facturaNo) {
@@ -107,5 +103,8 @@
       }
     }
   }
+
+
 </script>
+
 {% endblock %}

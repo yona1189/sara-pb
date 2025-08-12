@@ -5,12 +5,6 @@ from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-@login_required(login_url='/usuarios/login/')
-def index(request):
-    return render(request, 'clientes/index.html')
-
-
-
 def clientes(request):
     clientes = Cliente.objects.all()
     form = ClienteForm()
@@ -53,3 +47,6 @@ def eliminar_cliente(request, cliente_id):
         messages.success(request, "Cliente eliminado exitosamente.")
         return redirect('clientes')
     return render(request, 'clientes/confirmar_eliminar_cliente.html', {'cliente': cliente})
+
+
+

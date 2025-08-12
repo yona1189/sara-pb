@@ -1,5 +1,4 @@
-
-  function actualizarTabla(factura_no) {
+function actualizarTabla(factura_no) {
     $.ajax({
       url: "{% url 'obtener_detalles_por_factura' %}",
       data: { factura_no: factura_no },
@@ -48,3 +47,25 @@
       actualizarTabla(facturaInicial);
     }
   });
+
+  document.querySelector("#form-salida").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const form = this;
+
+    fetch(form.action, {
+        method: "POST",
+        body: new FormData(form),
+        headers: {
+            "X-Requested-With": "XMLHttpRequest",
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.modal) {
+            document.querySelector("#contenedor-modal").innerHTML = data.modal;
+            const modal = new bootstrap.Modal(document.getElementById("miModal"));
+            modal.show();
+        }
+    });
+  });
+

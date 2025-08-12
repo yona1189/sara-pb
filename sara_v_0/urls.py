@@ -15,23 +15,24 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from clientes import views as clientes_views
+from login import views as loguin_views
 
 from django.conf import settings
 from django.conf.urls.static import static
 
 
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('select2/', include('django_select2.urls')),
-    path('usuarios/', include('usuarios.urls')), #Rutas de appUsuarios
-    path('', clientes_views.index, name='index'),  # vista index general
-    path('clientes/', include('clientes.urls')),   # rutas de la appcliente
-    path('proveedores/', include('proveedores.urls')),   # rutas de la appproveedor
-    path('inventarios/', include('inventarios.urls')),   # rutas de la appproveedor
-
     
-]
+    path('select2/', include('django_select2.urls')),
+    path('login/', include('login.urls')),
+    path('usuarios/', include('usuarios.urls')), #Rutas de appUsuarios
+    path('', loguin_views.index, name='index'),  # vista index general
+    path('clientes/', include('clientes.urls')),   # rutas de la appcliente
+    path('proveedores/', include('proveedores.urls')),   # rutas de la app proveedor
+    path('inventarios/', include('inventarios.urls')),   # rutas de la app inventarios
+    path('ajustes/', include('ajustes.urls')),   # rutas de la app inventarios
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

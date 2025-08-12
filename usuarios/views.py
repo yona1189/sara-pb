@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.views import LoginView
 from .forms import LoginForm
@@ -8,28 +8,9 @@ from django.contrib import messages
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import login_required
 
 
-#Clase para cargar el login
-class LoginUsuario(LoginView):
-    template_name = 'usuarios/login.html'
-
-#iniciar sesion
-def login_view(request):
-    if request.method == 'POST':
-        form = LoginForm(data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('index')  # Redirige al index
-    else:
-        form = LoginForm()
-    return render(request, 'usuarios/login.html', {'form': form})
-
-#Cerrar sesion
-def logout_view(request):
-    logout(request)
-    return redirect('login')  # Redirige al login después de cerrar sesión
 
 
 
@@ -124,3 +105,10 @@ def perfiles_accesos(request):
         'usuarios': usuarios,
         'grupos': grupos
     })
+
+@login_required
+def cambiar_tema(request):
+    user = request.user
+    user.tema = 'oscuro' if user.tema == 'claro' else 'claro'
+    user.save()
+    return redirect(request.META.get('HTTP_REFERER', '/'))

@@ -1,0 +1,40 @@
+<form 
+    id="salida-formulario"
+    method="POST"
+    hx-post="{% url 'registrar_salida' %}"
+    hx-swap="none"
+    hx-on="htmx:afterRequest: actualizarTablaSalidas()">
+    
+    {% csrf_token %}
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label for="id_factura_no">Factura No</label>
+        <input
+          type="text"
+          name="factura_no"
+          id="id_factura_no"
+          class="form-control"
+          placeholder="Ingrese número de factura"
+          hx-get="{% url 'detalle_salida_htmx' %}"
+          hx-trigger="keyup changed delay:300ms"
+          hx-target="#tabla-salidas"
+          autocomplete="off"
+          value="{{ form.factura_no.value|default_if_none:'' }}"
+        />
+      </div>
+
+      <div class="col-md-4">
+        <label for="id_articulo">Artículo</label>
+        {{ form.articulo }}
+      </div>
+
+      <div class="col-md-4">
+        {{ form.cantidad.label_tag }}
+        {{ form.cantidad }}
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <button type="submit" class="btn btn-danger w-100">Registrar salida</button>
+    </div>
+  </form>

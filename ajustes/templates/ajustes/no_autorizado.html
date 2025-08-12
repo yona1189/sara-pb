@@ -1,0 +1,32 @@
+{% extends "../layouts/base.html" %}
+{%load static %} 
+{% block content %}
+<!-- Botón invisible que dispara el modal automáticamente -->
+<button id="abrirModal" type="button" class="btn btn-primary d-none" data-bs-toggle="modal" data-bs-target="#modalPermisos">
+  Abrir modal
+</button>
+
+<!-- Modal de advertencia -->
+<div class="modal fade" id="modalPermisos" tabindex="-1" aria-labelledby="modalPermisosLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-warning text-dark">
+        <h5 class="modal-title" id="modalPermisosLabel">Acceso restringido</h5>
+      </div>
+      <div class="modal-body">
+        <p>{{ razon }}</p>
+      </div>
+      <div class="modal-footer">
+        <a href="{% url 'index' %}" class="btn btn-secondary">Volver al inicio</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Ejecutar el modal al cargar la página
+  window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('abrirModal').click();
+  });
+</script>
+{% endblock %}

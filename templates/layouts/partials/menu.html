@@ -22,7 +22,7 @@
       <a href="{% url 'clientes' %}" class="btn btn-menu mb-2"
         ><i class="fas fa-user icono-menu"></i>Clientes</a
       >
-      {# Solo los usuarios con rol de administrador pueden acceder al moduli de usuarios #}
+      {# Solo los usuarios con rol de administrador pueden acceder al modulo de usuarios #}
 
       
      {% if es_admin %}
@@ -40,18 +40,20 @@
       <a href="{% url 'inventarios' %}" class="btn btn-menu mb-2">
         <i class="fas fa-box icono-menu"></i>Inventario</a
       >
-
+      <!--
       <a href="#" class="btn btn-menu mb-2">
         <i class="fas fa-file-invoice-dollar icono-menu"></i>Facturación</a
       >
+      -->
 
-      <a href="#" class="btn btn-menu mb-2"
-        ><i class="fas fa-cog icono-menu"></i>ajustes</a
+       <a href="{% url 'ajustes' %}" class="btn btn-menu mb-2">
+        <i class="fas fa-cog icono-menu"></i>ajustes</a
       >
-
+      <!--
       <a href="#" class="btn btn-menu mb-2"
         ><i class="fas fa-paint-brush icono-menu"></i>Personalizar</a
       >
+      -->
 
       <a href="#" class="btn btn-menu mb-2"
         ><i class="fas fa-headset icono-menu"></i>Soporte</a

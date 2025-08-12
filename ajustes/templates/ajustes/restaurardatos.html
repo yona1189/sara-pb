@@ -1,0 +1,71 @@
+{% extends "../layouts/base.html" %}
+{%load static %} 
+{% load widget_tweaks %}
+{% block title %}Ajustes{% endblock %}
+{% block cabecera_p %} 
+  Ajustes  
+  {% endblock %}
+{% block cabecera_imagen %} 
+  <img src="{% static 'img/ajustes.svg' %}" class="img-plantilla" alt="" />
+  {% endblock %}
+
+{% block content %}
+
+{# Mostrar mensajes de Django #}
+{% if messages %}
+<div class="container mt-2">
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+    {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    {% include 'layouts/submenu_ajustes.html' %}
+    <h2>Restauración Backup de Base de Datos</h2>
+    <form  method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label  for="archivo_sql">Subir archivo .sql:</label>
+        <input  type="file" name="archivo_sql" accept=".sql" required>
+        <button class = "ajustes-backup" type="submit" formaction="{% url 'restaurar_backup' %}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-cloud-arrow-up-fill" viewBox="0 0 16 16">
+            <path d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2m2.354 5.146a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0z"/>
+</svg>
+          
+Restaurar Backup</button>
+    </form>
+
+    <hr>
+
+{% endblock %}
+{# Mostrar backdrop y evitar scroll si hay errores o se edita #}
+{% if form.errors or mostrar_modal or editando %}
+<script>
+  const modal = new bootstrap.Modal(document.getElementById('usuarioModal'));
+  modal.show();
+</script>
+<style>body { overflow: hidden; }</style>
+{% endif %}
+
+{% block scripts %}
+  {% if mostrar_modal %}
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const modal = new bootstrap.Modal(document.getElementById("usuarioModal"));
+        modal.show();
+      });
+    </script>
+    <style>
+      body { overflow: hidden; }
+    </style>
+  {% endif %}
+{% endblock %}

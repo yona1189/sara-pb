@@ -3,10 +3,7 @@
   margin: 0;
   box-sizing: border-box;
 }
-body {
-  background-color: #044662 !important;
-  color: #ffffff;
-}
+
 /*Login*/
 .content_login{
 margin-top: 10%;
@@ -121,6 +118,27 @@ input.form-control {
 /*fin */
 
 /*menu para moviles*/
+/* Tema claro y oscuro (La configuracion se guarda en el perfil del usuario)*/
+
+body.claro {
+    background-color: #044662 !important;
+    color: #ffffff !important;
+}
+body.oscuro {
+    background-color: #121212 !important;
+    color: white !important;
+}
+
+/*botones de Ajustes backup*/
+.ajustes-backup{
+  width: 210px;
+  height: 65px;
+  font-size: 20px;
+  background-color: #0d6efd;
+  color: #ffffff;
+}
+
+
 /* Estilo botón visible solo en móviles */
 .btn-menu-mobile {
   display: none;
@@ -235,8 +253,8 @@ input.form-control {
 }
 
 .img-principal {
-  width: 80vmin;            
-  height: auto;
+  width: 75vmin;            
+  height: 300px;
 
   
 }
@@ -392,6 +410,43 @@ form .form-control, .select2-container .select2-selection--single {
 .small-form-alert {
   font-size: 0.95rem;
 }
+
+/* Tema claro y oscuro (La configuracion se guarda en el perfil del usuario)*/
+
+body.claro {
+    background-color: #044662 !important;
+    color: #ffffff !important;
+}
+body.oscuro {
+    background-color: #121212 !important;
+    color: white !important;
+}
+
+/*selector de fechas*/
+.daterangepicker {
+  background-color: #ffffff; /* Fondo blanco */
+  color: #000000; /* Texto negro */
+}
+
+.daterangepicker td.available {
+  color: #000 !important; /* Asegura que los días estén en negro */
+}
+
+.daterangepicker td.active,
+.daterangepicker td.in-range {
+  background-color: #007bff; /* Color de selección */
+  color: #fff !important;   /* Texto blanco sobre fondo azul */
+}
+
+.daterangepicker td.off {
+  color: #ccc !important; /* Días fuera de mes */
+}
+
+.daterangepicker .calendar-table th {
+  color: #000 !important; /* Días de la semana */
+}
+
+
 
 
 

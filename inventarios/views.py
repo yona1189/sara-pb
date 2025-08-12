@@ -6,6 +6,9 @@ from .models import Articulo, EntradaFactura, DetalleEntrada, DetalleSalida, Sal
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 
+from django.template.loader import render_to_string
+from django.http import JsonResponse
+
 def inventarios(request):
     articulos = Articulo.objects.all()
     form = ArticuloForm()
@@ -51,6 +54,25 @@ def eliminar_articulo(request, articulo_id):
         return redirect('inventarios')
     return render(request, 'inventarios/confirmar_eliminar_articulo.html', {'articulo': articulo})
 
+#Buscar articulos
+
+def buscar_articulos_select2(request):
+    term = request.GET.get('term', '').strip()
+    results = []
+    if len(term) >= 2:  #solo busca si tiene 2 o más letras
+        articulos = Articulo.objects.filter(nombre_art__icontains=term)[:20]
+        results = [{"id": art.id, "text": art.nombre_art} for art in articulos]
+    return JsonResponse({"results": results})
+
+def filtrar_articulo_tabla(request):
+    termino = request.GET.get('q', '')
+    if termino:
+        articulos = Articulo.objects.filter(nombre_art__icontains=termino)
+    else:
+        articulos = Articulo.objects.all()
+    return render(request, 'inventarios/tabla_articulos.html', {"articulos": articulos})
+
+
 
 
 @login_required
@@ -86,12 +108,17 @@ def registrar_entrada(request):
             articulo.stock += cantidad
             articulo.save()
 
-            # 6. Mostrar mensaje y redirigir (con datos prellenados)
-            messages.success(request, f"Agregado: {cantidad} unidades de '{articulo.nombre_art}' a la factura {factura_no}.")
+            
             
             # Re-crear el formulario con el número de factura ya puesto
-            #form = DetalleEntradaForm(initial={'factura_no': #factura_no})
-            return HttpResponse(status=204)
+            form = DetalleEntradaForm(initial={'factura_no': factura_no})
+            mensaje_html = render_to_string(
+                'inventarios/mensaje_modal.html',
+                {'mensaje': f"Agregado: {cantidad} unidades de '{articulo.nombre_art}' a la factura {factura_no}."},
+                request=request
+            )
+
+            return JsonResponse({'modal': mensaje_html})
 
     else:
         # Primera vez que se carga la vista
@@ -113,6 +140,11 @@ def detalle_factura_htmx(request):
     })
 
 #salidas
+
+def mostrar_mensaje_modal(request):
+    html = render_to_string('inventarios/mensaje_modal.html', {}, request=request)
+    return JsonResponse({'html': html})
+
 @login_required
 def registrar_salida(request):
     if request.method == 'POST':
@@ -122,6 +154,20 @@ def registrar_salida(request):
             articulo = form.cleaned_data['articulo']
             cantidad = form.cleaned_data['cantidad']
 
+            if articulo.stock < cantidad:
+                mensaje_html = render_to_string(
+                    'inventarios/mensaje_modal.html',
+                    {'mensaje': f"No hay suficiente stock disponible. Stock actual: {articulo.stock}, solicitado: {cantidad}."},
+                    request=request
+                )
+
+                form.data = form.data.copy()
+                form.data['cantidad'] = ''
+
+                html = render_to_string('inventarios/registrar_salida_form.html', {'form': form}, request=request)
+                return JsonResponse({'modal': mensaje_html})
+
+            # Stock suficiente
             factura, _ = SalidaFactura.objects.get_or_create(
                 factura_no=factura_no,
                 defaults={'usuario_responsable': request.user}
@@ -133,17 +179,20 @@ def registrar_salida(request):
                 cantidad=cantidad
             )
 
-            # Restar del stock del artículo
-            articulo.stock = max(0, articulo.stock - cantidad)
+            articulo.stock -= cantidad
             articulo.save()
 
-            messages.success(request, f"Salida registrada: {cantidad} unidades de '{articulo.nombre_art}' en factura {factura_no}.")
-            return HttpResponse(status=204)  # HTMX: no necesita respuesta
+            mensaje_html = render_to_string(
+                'inventarios/mensaje_modal.html',
+                {'mensaje': f"Salida registrada: {cantidad} unidades de '{articulo.nombre_art}' en factura {factura_no}."},
+                request=request
+            )
+
+            return JsonResponse({'modal': mensaje_html})
     else:
         form = DetalleSalidaForm()
 
     return render(request, 'inventarios/registrar_salida.html', {'form': form})
-
 
 @login_required
 def detalle_salida_htmx(request):

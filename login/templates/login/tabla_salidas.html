@@ -1,0 +1,27 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-striped table-hover shadow-sm align-middle text-center">
+    <thead class="table-dark">
+    <tr>
+      <th>Factura</th>
+      <th>Artículo</th>
+      <th>Cantidad</th>
+      <th>Fecha</th>
+      <th>Responsable</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for salida in salidas %}
+    <tr>
+      <td>{{ salida.factura.factura_no }}</td>
+      <td>{{ salida.articulo.nombre_art }}</td>
+      <td>{{ salida.cantidad }}</td>
+      <td>{{ salida.factura.fecha_salias|date:"d M Y H:i" }}</td>
+      <td>{{ salida.factura.usuario_responsable }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="5" class="text-center">No se encontraron resultados.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

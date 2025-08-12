@@ -41,10 +41,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'widget_tweaks',
     'django_select2',#Autocompletado y carga de grandes datos
-    'clientes',
     'usuarios',
     'proveedores',
-    'inventarios'
+    'inventarios',
+    'ajustes',
+    'login',
+    'clientes',
 ]
 
 MIDDLEWARE = [
@@ -72,6 +74,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'usuarios.context_processors.es_admin',
+                'usuarios.context_processors.tema_usuario',
             ],
         },
 
@@ -122,7 +125,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
         'OPTIONS': {
-            'min_length': 8,  # Puedes ajustarlo si deseas
+            'min_length': 8,  
         }
     },
     {
@@ -163,6 +166,7 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+#MEDIA_ROOT = MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Default primary key field type
@@ -172,5 +176,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'usuarios.UsuarioPersonalizado'#se registra el usuario personalizado para sara
 
 
-LOGIN_URL = '/usuarios/login/'
+LOGIN_URL = '/login/login/'
 LOGIN_REDIRECT_URL = '/'  # Se redirige al index luego del login

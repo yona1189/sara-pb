@@ -1,0 +1,247 @@
+{# Extendemos la plantilla base #}
+{% extends "../layouts/base.html" %}  
+{# Cargamos archivos estaticos #}
+{%load static %} 
+{# Reescribimos el bloque de titulo de la pagina #}
+{% block title %} Sara {% endblock %} 
+
+{% block cabecera_p %} Bienvenido a SARA 2 {% endblock %}
+  
+
+{% block content %}
+<div class="card-img">
+  {% if imagen_actual %}
+    <img src="{{ imagen_actual.imagen.url }}" class="img-principal"   alt="Imagen de inicio">
+    
+  {% else %}
+    <img src="{% static 'img/img_empresa.png' %}" class="img-principal" alt="Imagen por defecto">
+  {% endif %}
+</div>
+
+<!-- Seccion de reportes del index -->
+<h3 class="subtitulo">Reportes</h3>
+<div class="resumen1">
+  <!-- Reporte de clientes -->
+  <div class="resumen-item saltar">
+    <div class="card text-dark bg-info mb-8" >
+      <div class="card-header">
+        <h5> Clientes </h5>
+      </div>
+    <div class="card-body">
+      <!-- Se llama a la url  de "reporte_clientes_pdf" la cual llama a la funsion reporte_clientes_pdf el cual genera un reporte de todos los clientes  -->
+      <a href="{% url 'reporte_clientes_pdf' %}">
+     <svg xmlns="http://www.w3.org/2000/svg" height="45" width="45" viewBox="0 0 640 640"><!--!Font Awesome Free v7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path fill="#f90606" d="M128 64C92.7 64 64 92.7 64 128L64 512C64 547.3 92.7 576 128 576L208 576L208 464C208 428.7 236.7 400 272 400L448 400L448 234.5C448 217.5 441.3 201.2 429.3 189.2L322.7 82.7C310.7 70.7 294.5 64 277.5 64L128 64zM389.5 240L296 240C282.7 240 272 229.3 272 216L272 122.5L389.5 240zM272 444C261 444 252 453 252 464L252 592C252 603 261 612 272 612C283 612 292 603 292 592L292 564L304 564C337.1 564 364 537.1 364 504C364 470.9 337.1 444 304 444L272 444zM304 524L292 524L292 484L304 484C315 484 324 493 324 504C324 515 315 524 304 524zM400 444C389 444 380 453 380 464L380 592C380 603 389 612 400 612L432 612C460.7 612 484 588.7 484 560L484 496C484 467.3 460.7 444 432 444L400 444zM420 572L420 484L432 484C438.6 484 444 489.4 444 496L444 560C444 566.6 438.6 572 432 572L420 572zM508 464L508 592C508 603 517 612 528 612C539 612 548 603 548 592L548 548L576 548C587 548 596 539 596 528C596 517 587 508 576 508L548 508L548 484L576 484C587 484 596 475 596 464C596 453 587 444 576 444L528 444C517 444 508 453 508 464z"/>
+    </svg>
+     </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="resumen-item saltar">
+      <div class="card text-dark bg-info mb-8">
+         
+      <div class="card-header"><h5 class="card-title">Stock</h5></div>
+         
+      <div class="card-body">
+      <a href="{% url 'reporte-articulos_pdf' %}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="currentColor" class="bi bi-boxes" viewBox="0 0 16 16">
+        <path d="M7.752.066a.5.5 0 0 1 .496 0l3.75 2.143a.5.5 0 0 1 .252.434v3.995l3.498 2A.5.5 0 0 1 16 9.07v4.286a.5.5 0 0 1-.252.434l-3.75 2.143a.5.5 0 0 1-.496 0l-3.502-2-3.502 2.001a.5.5 0 0 1-.496 0l-3.75-2.143A.5.5 0 0 1 0 13.357V9.071a.5.5 0 0 1 .252-.434L3.75 6.638V2.643a.5.5 0 0 1 .252-.434zM4.25 7.504 1.508 9.071l2.742 1.567 2.742-1.567zM7.5 9.933l-2.75 1.571v3.134l2.75-1.571zm1 3.134 2.75 1.571v-3.134L8.5 9.933zm.508-3.996 2.742 1.567 2.742-1.567-2.742-1.567zm2.242-2.433V3.504L8.5 5.076V8.21zM7.5 8.21V5.076L4.75 3.504v3.134zM5.258 2.643 8 4.21l2.742-1.567L8 1.076zM15 9.933l-2.75 1.571v3.134L15 13.067zM3.75 14.638v-3.134L1 9.933v3.134z"/>
+        </svg>
+        </a>
+        
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="resumen-item saltar">
+      <div class="card text-dark bg-info mb-8">
+      <div class="card-header">
+        <h5  data-bs-toggle="modal" data-bs-target="#modalEntradas">
+          Entradas
+        </h5>
+      </div>
+      <div class="card-body">
+        <a class="btn btn-success"  data-bs-toggle="modal" data-bs-target="#modalEntradas">
+
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-box-arrow-in-up-right" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M6.364 13.5a.5.5 0 0 0 .5.5H13.5a1.5 1.5 0 0 0 1.5-1.5v-10A1.5 1.5 0 0 0 13.5 1h-10A1.5 1.5 0 0 0 2 2.5v6.636a.5.5 0 1 0 1 0V2.5a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5H6.864a.5.5 0 0 0-.5.5"/>
+  <path fill-rule="evenodd" d="M11 5.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793l-8.147 8.146a.5.5 0 0 0 .708.708L10 6.707V10.5a.5.5 0 0 0 1 0z"/>
+</svg>
+</a>
+      </div>
+    </div>
+  </div>
+ 
+  <div class="resumen-item saltar">
+      <div class="card text-dark bg-info mb-8">
+      <div class="card-header"><h5 class="card-title">Salidas</h5></div>
+      <div class="card-body">
+        <a class="btn btn-danger"  data-bs-toggle="modal" data-bs-target="#modalSalidas">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/>
+  <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/>
+</svg>
+</a>
+      </div>
+    </div>
+  </div>
+ 
+
+<div id="zona-modal">
+  <!-- Aquí se inyectará el modal vía HTMX/AJAX -->
+</div>
+
+
+<div class="modal fade" id="modalEntradas" tabindex="-1" aria-hidden="true">
+  <div class=" modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title m-0 w-100 text-center">Reporte de Entradas</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+
+        <!-- Formulario de filtro  -->
+        <form id="form-entradas" 
+              hx-get="{% url 'entradas_filtradas' %}" 
+              hx-target="#tabla-entradas" 
+              hx-trigger="submit"
+              hx-swap="innerHTML"
+              class="form-inline mb-3">
+          <label for="rango_fecha" class="mr-2">Seleccione un rango de Fechas:</label>
+          <input type="text" name="rango_fecha" id="rango_fecha" class="form-control mr-2" autocomplete="off">
+          <button type="submit" class="btn btn-primary">Filtrar</button>
+        </form>
+        
+        <!-- Zona donde se carga la tabla con HTMX -->
+        <div id="tabla-entradas">
+          <!-- Aquí se inyectará la tabla con los resultados -->
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalSalidas" tabindex="-1" aria-hidden="true">
+  <div class=" modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title m-0 w-100 text-center">Reporte de Salidas</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+
+        <!-- Formulario de filtro  -->
+        <form id="form-salidas" 
+              hx-get="{% url 'salidas_filtradas' %}" 
+              hx-target="#tabla-salidas" 
+              hx-trigger="submit"
+              hx-swap="innerHTML"
+              class="form-inline mb-3">
+          <label for="rango_fecha2" class="mr-2">Seleccione un rango de Fechas:</label>
+          <input type="text" name="rango_fecha2" id="rango_fecha2" class="form-control mr-2" autocomplete="off">
+          <button type="submit" class="btn btn-primary">Filtrar</button>
+        </form>
+        
+      
+         <!-- Zona donde se carga la tabla con HTMX -->
+        <div id="tabla-salidas">
+          <!-- Aquí se inyectará la tabla con los resultados -->
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+<script>
+
+  //limpiar el modal cada vez que se abra
+  document.addEventListener("DOMContentLoaded", function () {
+    const modalEnt = document.getElementById('modalEntradas');
+    const modalSal = document.getElementById('modalSalidas');
+    modalEnt.addEventListener('show.bs.modal', function () {
+        // Limpiar filas anteriores (dejando solo el encabezado)
+        const tbody = modalEnt.querySelector('tbody');
+        if (tbody) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center">Cargando...</td></tr>';
+        }
+    });
+
+    modalSal.addEventListener('show.bs.modal', function () {
+        // Limpiar filas anteriores (dejando solo el encabezado)
+        const tbody = modalSal.querySelector('tbody');
+        if (tbody) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center">Cargando...</td></tr>';
+        }
+    });
+});
+
+  document.addEventListener('shown.bs.modal', function (event) {
+    if (event.target.id === 'modalEntradas') {
+      $('#rango_fecha').daterangepicker({
+        locale: {
+          format: 'YYYY-MM-DD',
+          applyLabel: 'Aplicar',
+          cancelLabel: 'Cancelar',
+          customRangeLabel: 'Personalizado'
+        },
+        
+        opens: 'center',
+        //drops: 'auto',  // o 'up' si lo prefieres
+        autoUpdateInput: false,
+      });
+
+      $('#rango_fecha').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+      });
+
+      $('#rango_fecha').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+      });
+    }
+  });
+
+  document.addEventListener('shown.bs.modal', function (event) {
+    if (event.target.id === 'modalSalidas') {
+      $('#rango_fecha2').daterangepicker({
+        locale: {
+          format: 'YYYY-MM-DD',
+          applyLabel: 'Aplicar',
+          cancelLabel: 'Cancelar',
+          customRangeLabel: 'Personalizado'
+        },
+        
+        opens: 'center',
+        //drops: 'auto',  // o 'up' si lo prefieres
+        autoUpdateInput: false,
+      });
+
+      $('#rango_fecha2').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+      });
+
+      $('#rango_fecha2').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+      });
+    }
+  });
+
+
+  
+
+</script>
+
+{% endblock %}

@@ -6,83 +6,115 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Font Awesome 6 (sin integrity) -->
+
+    <!-- Agregamos los los estilos necesarios  -->
+    <!-- Font Awesome 6 ( para los iconos) -->
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-    />
-
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <!-- Para el calendario que permite seleccionar rangos de fechas -->
+    <!-- Date Range Picker CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <!-- Framework para el frontend -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <!-- CSS de Select2 para hacer busquedas de articulos con las 2 letras iniciales de su nombre -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <!-- Estilos personalizados de Sara (css/styles.css )-->
     <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+
+    <!-- jQuery (requerido por select2 y Range Picker JS 
+     Importante!: Debe ir antes del body para que funcione correctamente) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- BLoque para agregar estilos personalizados a las plantillas -->
     {% block styles %} {% endblock %}
+    <!-- BLoque para agregar título a las plantillas -->
     <title>{% block title %} {% endblock %}</title>
-    <!-- jQuery (requerido por select2) -->
-<!-- JS de Select2 -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- CSS de Select2 -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
-
-<!-- Esto permite que select2 funcione bien -->
-{{ form.media }}
+    
+    
+    <!-- Carga los archivos de la carpeta media dond estan las imagens dinamicas -->
+    {{ form.media }}
+    <!-- Logramos que el tema claro y oscuro funcione   -->
   </head>
-  <body>
+  <!-- la variable tema sirve para usarse como clase de css donde puede ser claro u oscuro, segun las preferencias de usuario esto para que el css de estilo segun el valor de estavariable -->
+  <body class="{{ tema }}">
     
     <div class="contenedor-encabezados">
-       <div class="encabezados">
-      <h1 class="encabezado-titulo">
-        {% block cabecera_p %}  {% endblock %}
-      </h1>
-        
-        <div>
-            {% block cabecera_imagen %}  {% endblock %}
-        </div>
-        </div>
-      <div class="encabezado-items">
-        {% if request.user.is_authenticated %}
-        <span class="fw-bold">{{ request.user.username }}
-        </span>
-        {% else %} No autenticado {% endif %}
-     
-        {% if user.is_authenticated %}
-        <form action="{% url 'logout' %}" method="post" style="display: inline">
-          {% csrf_token %}
-          <a
-            href="{% url 'logout' %}"
-            class="btn btn-outline-light d-flex align-items-center gap-2 logout-button">
-            <i class="fa fa-sign-out"></i>
-            Salir
-          </a>
-        </form>
-        {% endif %}
+      <div class="encabezados">
+        <h1 class="encabezado-titulo">
+          <!-- Bloque para personalizar el titulo de la plantilla -->
+          {% block cabecera_p %}  {% endblock %}
+        </h1>
+      <div>
+          <!-- Bloque para personalizar la imagen del logo de la plantilla ejemplo una imagen de usuario  para una app de usuarios -->
+          {% block cabecera_imagen %}  {% endblock %}
       </div>
     </div>
 
+    <div class="encabezado-items">
+      {% if request.user.is_authenticated %}
+        {% if tema == 'claro' %}
+          <a href="{% url 'cambiar_tema' %}">
+            <!-- Si; el usuario quiere modo claro se muestra el icono de  un sol -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-moon-fill" viewBox="0 0 16 16">
+              <path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278"/>
+            </svg>
+          </a>
+        {% else %}
+          <a href="{% url 'cambiar_tema' %}">
+            <!-- Sino; el usuario quiere modo oscuro se muestra el icono de  una luna -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-sun" viewBox="0 0 16 16">
+              <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6m0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708"/>
+            </svg>
+          </a>
+        {% endif %}
+        <span class="fw-bold">{{ request.user.username }}
+        </span>
+      {% else %} No autenticado{% endif %}
+        {% if user.is_authenticated %}
+          <form action="{% url 'logout' %}" method="post" style="display: inline">
+            {% csrf_token %}
+              <a
+              href="{% url 'logout' %}"
+              class="btn btn-outline-light d-flex align-items-center gap-2 logout-button">
+                <!-- Icono para cerrar cesion -->
+                <i class="fa fa-sign-out"></i>
+                Salir
+              </a>
+          </form>
+        {% endif %}
+      </div>
+    </div><!-- Fin encabezado-items -->
+    <!-- Bloque para incluir el menu lateral (menu.html) -->
     {% include 'layouts/partials/menu.html' %}
 
     <main>
       <hr>
-      {% block content %} 
-      {% endblock %}
+      <!-- Bloque de contenido principal el cual sera diferente en cada plantilla -->
+        {% block content %} 
+        {% endblock %}
     </main>
-
+    <!-- Bloque para incluir el footer en las plantillas -->
     {% include 'layouts/partials/footer.html' %} 
-    
+  
+  
+
+    <!-- Scripts globales necesarios para Sara -->
+
+    <!-- Recordemos que daterangepicker Permite generar un calendario para seleccionar rango de fechas para asi hacer consultas en la base de datos -->
+    <!-- Moment.js (requerido por daterangepicker (Calendario)) -->
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <!-- Date Range Picker JS (Calendario)) -->
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <!-- mensaje.js Permite mostrar mensajes tipo modal en cualqier plantila -->
+    <script src="{% static 'js/mensaje_modal.js' %}"></script> 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/formulario_usuario.js' %}"></script>
     <!-- htmx-->
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-    
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-
-
-{% block scripts %} 
-{% endblock %}
+    <!-- Bloque de script opcional para usar de manera personalizada en las plantillas -->
+    {% block scripts %} {% endblock %}
   </body>
 </html>
