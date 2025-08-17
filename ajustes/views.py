@@ -10,12 +10,14 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from .forms import ImagenInicioForm
 from .models import ImagenInicio
+from django.template.loader import render_to_string
+from django.http import JsonResponse
 
-@login_required(login_url='/usuarios/login/')
+@login_required(login_url='/login/login/')
 def ajustes(request):
     return render(request, 'ajustes/ajustes.html')
 
-@login_required(login_url='/usuarios/restaurardatos/')
+@login_required(login_url='/ajustes/restaurardatos/')
 def restaurardatos(request):
     return render(request, 'ajustes/restaurardatos.html')
 
@@ -29,10 +31,12 @@ def get_db_credentials():
     return db['NAME'], db['USER'], db['PASSWORD'], db['HOST'], db['PORT']
 
 
-@login_required(login_url='/usuarios/login/')
+@login_required(login_url='/login/login/')
 def hacer_backup(request):
     if not request.user.is_staff:
-          return render(request, "ajustes/no_autorizado.html", {"razon": "No tienes permisos para crear una copia de seguridad de la base de datos."})
+        return render(request, "ajustes/no_autorizado.html", {
+            "razon": "No tienes permisos para crear una copia de seguridad."
+        })
 
     if request.method == "POST":
         db_name, db_user, db_pass, db_host, db_port = get_db_credentials()
@@ -43,18 +47,34 @@ def hacer_backup(request):
         resultado = subprocess.run(comando, shell=True)
 
         if resultado.returncode == 0:
-           
-            return FileResponse(open(ruta_backup, 'rb'), as_attachment=True, filename=nombre_archivo)
+            url_descarga = reverse('descargar_backup')
+            mensaje_html = render_to_string(
+                'ajustes/mensaje_modal.html',
+                {'mensaje': 'Copia de seguridad creada con éxito',
+                 'url_descarga': url_descarga},
+                request=request
+            )
+            return JsonResponse({'modal': mensaje_html})
         else:
-            messages.error(request, "Error al crear la copia de seguridad.")
-
-        return redirect(reverse('hacer_backup'))
+            mensaje_html = render_to_string(
+                'ajustes/mensaje_modal.html',
+                {'mensaje': 'Error al crear la copia de seguridad',
+                 'url_descarga': None},
+                request=request
+            )
+            return JsonResponse({'modal': mensaje_html})
 
     return render(request, 'backup_form.html')
 
 
+@login_required(login_url='/login/login/')
+def descargar_backup(request):
+    nombre_archivo = "backup.sql"
+    ruta_backup = os.path.join(BACKUP_DIR, nombre_archivo)
+    return FileResponse(open(ruta_backup, 'rb'), as_attachment=True, filename=nombre_archivo)
 
-@login_required(login_url='/usuarios/login/')
+
+@login_required(login_url='/login/login/')
 def restaurar_backup(request):
     if not request.user.is_staff:
           return render(request, "ajustes/no_autorizado.html", {"razon": "No tienes permisos para restaurar la base de datos"})
@@ -81,10 +101,10 @@ def restaurar_backup(request):
 
         return redirect(reverse('restaurar_backup'))
 
-    return render(request, 'backup_form.html')
+    return render(request, 'login/login.html')
 
 #Cambiar imagen emporesa
-@staff_member_required(login_url='/usuarios/login/')
+@staff_member_required(login_url='/login/login/')
 def cambiar_imagen_inicio(request):
     imagen_actual = ImagenInicio.objects.last()  # Tomamos la más reciente
 
@@ -94,7 +114,7 @@ def cambiar_imagen_inicio(request):
             ImagenInicio.objects.all().delete()  # Eliminamos anteriores
             form.save()
             
-            return redirect('cambiar_imagen_inicio')
+            return redirect('index')
         else:
             messages.error(request, "Error al subir la imagen.")
     else:

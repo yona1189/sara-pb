@@ -446,7 +446,41 @@ body.oscuro {
   color: #000 !important; /* Días de la semana */
 }
 
+/* inicio select*/
 
+/* Contenedor principal del dropdown */
+.select2-container .select2-dropdown {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+/* Cada opción de la lista */
+.select2-container .select2-results__option {
+    padding: 8px;
+    color: black;
+    background-color: white;
+    transition: background-color 0.2s;
+}
+
+/* Hover sobre opción */
+.select2-container .select2-results__option--highlighted {
+    background-color: #007BFF !important;
+    color: white !important;
+}
+
+/* Opción seleccionada */
+.select2-container .select2-results__option[aria-selected="true"] {
+    background-color: #007BFF !important;
+    color: white !important;
+}
+
+/* Área de búsqueda dentro del dropdown */
+.select2-container .select2-search__field {
+    padding: 6px;
+    border: 1px solid #ccc;
+}
+/*fin select*/
 
 
 

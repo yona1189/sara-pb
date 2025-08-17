@@ -145,12 +145,11 @@ LANGUAGES = [
     ('es', 'Español'),
 ]
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Bogota'
+USE_TZ = True
 
 USE_I18N = True
 USE_L10N = True
-
-USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)

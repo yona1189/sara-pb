@@ -5,8 +5,8 @@ from .forms import ArticuloForm, DetalleEntradaForm, DetalleSalidaForm
 from .models import Articulo, EntradaFactura, DetalleEntrada, DetalleSalida, SalidaFactura
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-
-from django.template.loader import render_to_string
+from django.utils import timezone
+from datetime import timedelta
 from django.http import JsonResponse
 
 def inventarios(request):
@@ -71,7 +71,6 @@ def filtrar_articulo_tabla(request):
     else:
         articulos = Articulo.objects.all()
     return render(request, 'inventarios/tabla_articulos.html', {"articulos": articulos})
-
 
 
 
@@ -210,11 +209,25 @@ def detalle_salida_htmx(request):
 @login_required
 def listar_facturas(request):
     tipo = request.GET.get('tipo', 'entrada')
+    
+    ahora = timezone.localtime()  # Fecha y hora local
+    inicio_dia = ahora.replace(hour=0, minute=0, second=0, microsecond=0)
+    fin_dia = inicio_dia + timedelta(days=1)
 
     if tipo == 'salida':
-        facturas = SalidaFactura.objects.select_related('usuario_responsable').order_by('-fecha_salida')
+        facturas = (
+            SalidaFactura.objects
+            .select_related('usuario_responsable')
+            .filter(fecha_salida__gte=inicio_dia, fecha_salida__lt=fin_dia)
+            .order_by('-fecha_salida')
+        )
     else:
-        facturas = EntradaFactura.objects.select_related('usuario_responsable').order_by('-fecha_entrada')
+        facturas = (
+            EntradaFactura.objects
+            .select_related('usuario_responsable')
+            .filter(fecha_entrada__gte=inicio_dia, fecha_entrada__lt=fin_dia)
+            .order_by('-fecha_entrada')
+        )
 
     return render(request, 'inventarios/listar_facturas.html', {
         'facturas': facturas,

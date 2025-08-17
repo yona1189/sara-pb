@@ -1,11 +1,18 @@
 {% extends "../layouts/base.html" %}
 {% block title %}Perfiles y Accesos{% endblock %}
+{%load static %} 
 
+{% block cabecera_p %} 
+  Usuarios  
+  {% endblock %}
+{% block cabecera_imagen %} 
+  <img src="{% static 'img/usuarios.svg' %}" class="img-plantilla" alt="" />
+  {% endblock %}
 {% block content %}
-<h1>Perfiles y Accesos</h1>
+
 
 {% include 'layouts/submenu_usuarios.html' %}
-
+<h4>Perfiles y Accesos</h4>
 <div class="table-responsive">
   <table class="table table-bordered table-hover text-center">
     <thead class="table-dark">

@@ -42,7 +42,7 @@
         class="form-control"
         placeholder="Ingrese número de factura"
         hx-get="{% url 'detalle_factura_htmx' %}"
-        hx-trigger="keyup changed delay:300ms"
+        hx-trigger="keyup changed delay:1000ms"
         hx-target="#tabla-detalles"
         autocomplete="off"
         value="{{ form.factura_no.value|default_if_none:'' }}"
@@ -103,8 +103,8 @@
       }
 
       // Enfocar nuevamente el campo cantidad
-      if (cantidadInput) {
-        cantidadInput.focus();
+      if (articuloSelect) {
+        articuloSelect.focus();
       }
     }
   }

@@ -20,7 +20,7 @@
   <body class="{{ tema }}" >
 <div class="container d-flex justify-content-center align-items-center content_login">
         <div class="login-container login-contenedor ">
-            <h2 class="login-title titulo-login">Iniciar Sesión 2</h2>
+            <h2 class="login-title titulo-login">Iniciar Sesión</h2>
 
             <div class="card-img">
   <img
@@ -33,7 +33,7 @@
             <form method="post" novalidate>
                 {% csrf_token %}
                 <div class="mb-3">
-                    <label for="id_username" class="form-label">Usuario 2</label>
+                    <label for="id_username" class="form-label">Usuario</label>
                     {{ form.username|add_class:"form-control" }}
                 </div>
                 <div class="mb-3">

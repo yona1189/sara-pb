@@ -4,7 +4,9 @@ from django.contrib.auth.views import LoginView
 from .forms import LoginForm
 from ajustes.models import ImagenInicio 
 from django.contrib import messages
-
+from django.conf import settings
+import os
+from reportlab.platypus import Image
 
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.decorators import login_required
@@ -28,7 +30,8 @@ from reportlab.platypus import Table, TableStyle, SimpleDocTemplate, Paragraph, 
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 import io
 from django.utils.timezone import make_aware
-
+from datetime import datetime
+from django.utils.timezone import make_aware
 
 #Clase para cargar el login
 class LoginUsuario(LoginView):
@@ -76,7 +79,9 @@ def exportar_clientes_pdf(request):
     )
 
     # logotipo 
-    logo_path = 'static/img/logo.png'  # Ruta estática al logo de sara
+    #logo_path = 'static/img/logo.png'  # Ruta estática al logo de sara
+    logo_path = os.path.join(settings.BASE_DIR, 'static', 'img', 'logo.png')
+    im = Image(logo_path, width=100, height=50)
     try:
         logo = Image(logo_path, width=1.2 * inch, height=1.2 * inch)
         logo.hAlign = 'LEFT'
@@ -149,7 +154,9 @@ def exportar_articulos_pdf(request):
     styles = getSampleStyleSheet()
 
       # logotipo 
-    logo_path = 'static/img/logo.png'  # Ruta estática al logo de sara
+    #logo_path = 'static/img/logo.png'  # Ruta estática al logo de sara
+    logo_path = os.path.join(settings.BASE_DIR, 'static', 'img', 'logo.png')
+    im = Image(logo_path, width=100, height=50)
     try:
         logo = Image(logo_path, width=1.2 * inch, height=1.2 * inch)
     except:
@@ -226,85 +233,7 @@ def exportar_articulos_pdf(request):
     response.write(pdf)
     return response
 
-def entradas_filtradas2(request):
-    rango = request.GET.get('rango_fecha')
-    entradas = None  # Inicialmente no hay entradas
-    
-    if rango:
-        try:
-            fecha_inicio_str, fecha_fin_str = [f.strip() for f in rango.split(' - ')]
 
-            fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d')
-            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d')
-            fecha_fin = fecha_fin.replace(hour=23, minute=59, second=59)
-
-            entradas = DetalleEntrada.objects.select_related(
-                'factura', 'articulo', 'factura__usuario_responsable'
-            ).filter(factura__fecha_entrada__range=[fecha_inicio, fecha_fin])
-
-        except Exception as e:
-            messages.error(request, f"Error al interpretar las fechas: {e}")
-            entradas = []
-    else:
-        mensaje_html = render_to_string(
-                    'layouts/partials/mensaje_modal.html',
-                    {'mensaje': f"Por favor seleccione un rago de fechas"},
-                    request=request
-                )
-        entradas = []
-        return JsonResponse({'modal': mensaje_html})
-
-
-    return render(request, 'clientes/tabla_entradas.html', {'entradas': entradas})
-
-
-def entradas_filtradas3(request):
-    rango = request.GET.get('rango_fecha')
-    entradas = DetalleEntrada.objects.select_related('factura', 'articulo', 'factura__usuario_responsable')
-    resultados = []
-    if rango:
-        try:
-            fecha_inicio_str, fecha_fin_str = [f.strip() for f in rango.split(' - ')]
-            fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d')
-            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d')
-            fecha_fin = fecha_fin.replace(hour=23, minute=59, second=59)
-            entradas = entradas.filter(factura__fecha_entrada__range=[fecha_inicio, fecha_fin])
-        except Exception as e:
-            print(f"Error parsing fecha: {e}")
-            entradas = []  # O manejar error
-    return render(request, 'login/tabla_entradas.html', {
-        'resultados': resultados,
-        'hay_resultados': bool(resultados),
-        'mostrar_modal': True,  # Indicador para abrir el modal
-    })
-
-
-def entradas_filtradas6(request):
-    rango = request.GET.get('rango_fecha')
-    entradas = DetalleEntrada.objects.select_related('factura', 'articulo', 'factura__usuario_responsable')
-    resultados = []
-
-    if rango:
-        try:
-            fecha_inicio_str, fecha_fin_str = [f.strip() for f in rango.split(' - ')]
-            fecha_inicio = make_aware(datetime.strptime(fecha_inicio_str, '%Y-%m-%d'))
-            fecha_fin = make_aware(datetime.strptime(fecha_fin_str, '%Y-%m-%d').replace(hour=23, minute=59, second=59))
-
-            entradas = entradas.filter(factura__fecha_entrada__range=[fecha_inicio, fecha_fin])
-            resultados = list(entradas)  # Aquí llenas resultados
-        except Exception as e:
-            print(f"Error parsing fecha: {e}")
-            entradas = []
-            resultados = []
-
-    return render(request, 'login/tabla_entradas.html', {
-        'resultados': resultados,
-        'hay_resultados': bool(resultados),
-        'mostrar_modal': not bool(resultados),  # Mostrar modal si no hay resultados
-    })
-
-from datetime import datetime
-from django.utils.timezone import make_aware
 
 def entradas_filtradas(request):
     rango = request.GET.get('rango_fecha')
